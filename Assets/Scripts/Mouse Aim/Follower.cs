@@ -38,7 +38,7 @@ public class Follower : MonoBehaviour {
         }
 
         if (tank.turning) {
-            moveSpeed = 0.1f;
+            moveSpeed = 0.2f;
         }
 
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed);

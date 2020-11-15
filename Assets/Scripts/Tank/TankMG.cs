@@ -7,6 +7,10 @@ public class TankMG : MonoBehaviour {
     public float shootForce;
     public float fireRate;
     float nextFireTime;
+    Transform trans;
+    private void Start() {
+        trans = transform;
+    }
     void Update() {
         if (Input.GetKey(KeyCode.Mouse1) && Time.time > nextFireTime) {
             Shoot();
@@ -16,11 +20,11 @@ public class TankMG : MonoBehaviour {
 
     void Shoot() {
         RaycastHit hit;
-        Debug.DrawRay(transform.position, transform.forward * 50, Color.yellow);
-        if (Physics.Raycast(transform.position, transform.forward, out hit)) {
+        Debug.DrawRay(trans.position, trans.forward * 50, Color.yellow);
+        if (Physics.Raycast(trans.position, trans.forward, out hit)) {
             //if hit enemy { kill enemy after 0.2 seconds (to account for pseudobullet speed) }
         }
-        GameObject newShot = Instantiate(mGShot, transform.position, transform.rotation);
+        GameObject newShot = Instantiate(mGShot, trans.position, trans.rotation);
         newShot.GetComponent<Rigidbody>().AddForce(newShot.transform.forward * shootForce, ForceMode.Impulse);
         Destroy(newShot, 2f);
     }

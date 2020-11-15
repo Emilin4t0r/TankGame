@@ -13,19 +13,22 @@ public class TurretTurn : MonoBehaviour {
     private Quaternion qGun;
     private Quaternion qGunStart;
 
+    private Transform trans;
+
     void Start() {
         qGunStart = gun.transform.localRotation;
         currentElev = maxElevation;
+        trans = transform;
     }
 
     void Update() {
-        float distanceToPlane = Vector3.Dot(transform.up, target.position - transform.position);
-        Vector3 planePoint = target.position - transform.up * distanceToPlane;
+        float distanceToPlane = Vector3.Dot(trans.up, target.position - trans.position);
+        Vector3 planePoint = target.position - trans.up * distanceToPlane;
 
-        qTurret = Quaternion.LookRotation(planePoint - transform.position, transform.up);
-        transform.eulerAngles = qTurret.eulerAngles;
+        qTurret = Quaternion.LookRotation(planePoint - trans.position, trans.up);
+        trans.eulerAngles = qTurret.eulerAngles;
 
-        Vector3 v3 = new Vector3(0.0f, distanceToPlane, (planePoint - transform.position).magnitude);
+        Vector3 v3 = new Vector3(0.0f, distanceToPlane, (planePoint - trans.position).magnitude);
         qGun = Quaternion.LookRotation(v3);
 
         if (Quaternion.Angle(qGunStart, qGun) <= currentElev)
