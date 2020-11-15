@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WheelRotator : MonoBehaviour
-{
+public class WheelRotator : MonoBehaviour {
     WheelsControlAssigner tankSpeed;
     float speed;
 
@@ -12,10 +11,6 @@ public class WheelRotator : MonoBehaviour
     }
     private void FixedUpdate() {
         speed = tankSpeed.transform.InverseTransformDirection(tankSpeed.rb.velocity).z;
-        if (speed > 0)
         transform.Rotate(new Vector3(0, speed, 0));
-        else {
-            transform.Rotate(new Vector3(0, speed, 0));
-        }
     }
 }

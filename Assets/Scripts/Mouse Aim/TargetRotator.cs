@@ -9,11 +9,14 @@ public class TargetRotator : MonoBehaviour {
     float ySpeed;
     float xSpeed;
     public float maxSpeed;
+    public bool isFreeLooking;
+    Transform trans;
 
     Vector3 nextAimSpot;    
 
     private void Start() {
         Cursor.lockState = CursorLockMode.Locked;
+        trans = transform;
         switch (Screen.width) {
             case 2048:
                 maxSpeed = 0.8f;
@@ -28,6 +31,18 @@ public class TargetRotator : MonoBehaviour {
     }
 
     void Update() {        
+        if (!isFreeLooking) {
+            MoveTurret();
+        }
+        if (Input.GetKey(KeyCode.C)) {
+            isFreeLooking = true;
+        } else {
+            isFreeLooking = false;
+        }
+        trans.position = targetRotatorSpot.transform.position;
+    } 
+    
+    void MoveTurret() {
         ySpeed = -Input.GetAxis("Mouse Y");
         xSpeed = Input.GetAxis("Mouse X");
         if (xSpeed > maxSpeed) {
@@ -37,13 +52,12 @@ public class TargetRotator : MonoBehaviour {
             xSpeed = -maxSpeed;
         }
 
-        if (transform.eulerAngles.x < 340 && transform.eulerAngles.x > 180 && ySpeed < 0) {
+        if (trans.eulerAngles.x < 340 && trans.eulerAngles.x > 180 && ySpeed < 0) {
             ySpeed = 0;
-        } else if (transform.eulerAngles.x > 40 && transform.eulerAngles.x < 180 && ySpeed > 0) {
+        } else if (trans.eulerAngles.x > 20 && trans.eulerAngles.x < 180 && ySpeed > 0) {
             ySpeed = 0;
         }
-        nextAimSpot = transform.eulerAngles + new Vector3(ySpeed, xSpeed, 0);
-        transform.eulerAngles = nextAimSpot;
-        transform.position = targetRotatorSpot.transform.position;
-    }    
+        nextAimSpot = trans.eulerAngles + new Vector3(ySpeed, xSpeed, 0);
+        trans.eulerAngles = nextAimSpot;        
+    }
 }
