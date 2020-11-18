@@ -1951,6 +1951,30 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 983577437}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &994464801 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5147189411385871926, guid: 537f9dbef8ae70b44bfd5f1695e5b02e, type: 3}
+  m_PrefabInstance: {fileID: 3886083443638246365}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &994464806
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994464801}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b3ae9c317e6da7e4a909045846fda994, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1039508555
 GameObject:
   m_ObjectHideFlags: 0
@@ -3820,6 +3844,14 @@ PrefabInstance:
     - target: {fileID: 3886083443003007625, guid: 537f9dbef8ae70b44bfd5f1695e5b02e, type: 3}
       propertyPath: fireRate
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3886083443003007625, guid: 537f9dbef8ae70b44bfd5f1695e5b02e, type: 3}
+      propertyPath: gunAnim
+      value: 
+      objectReference: {fileID: 994464806}
+    - target: {fileID: 6023434055262196509, guid: 537f9dbef8ae70b44bfd5f1695e5b02e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.6538703
       objectReference: {fileID: 0}
     - target: {fileID: 7300927354621051824, guid: 537f9dbef8ae70b44bfd5f1695e5b02e, type: 3}
       propertyPath: m_IsActive

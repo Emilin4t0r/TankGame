@@ -8,6 +8,7 @@ public class TankShoot : MonoBehaviour {
     public float fireRate;
     float nextFireTime;
     Transform trans;
+    public Animator gunAnim;
 
     void Start() {
         trans = transform;
@@ -22,6 +23,7 @@ public class TankShoot : MonoBehaviour {
 
     IEnumerator Shoot() {
         ViewChanger.Instance.ShakeCurrentCam(10, 5, 0, 1);
+        gunAnim.SetTrigger("Shoot");
         float waitTime;
         RaycastHit hit;
         Debug.DrawRay(trans.position, trans.forward * 500, Color.white, 1f);
@@ -29,7 +31,7 @@ public class TankShoot : MonoBehaviour {
             waitTime = Vector3.Distance(trans.position, hit.point) / velocity;
             yield return new WaitForSeconds(waitTime);
             GameObject explsn = Instantiate(explosion, hit.point, hit.transform.rotation);
-            Destroy(explsn, 1f);
+            Destroy(explsn, 5);
         }
     }
 
