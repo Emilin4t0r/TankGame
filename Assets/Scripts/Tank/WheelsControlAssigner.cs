@@ -9,13 +9,12 @@ public class WheelsControlAssigner : MonoBehaviour {
     WheelCollider[] rWheels;
     WheelCollider[] lWheels;
     public float motorForce;
-    public float steerForce; //braking when turning;    
+    public float steerForce; //braking when turning; 
     public float brakeForce;
     public float topSpd;
     public float topReverseSpd;
     public float topTurnSpd;
     float speedCap;
-    public bool turning;
     public bool reversing;
     public float currentSpeed;
 
@@ -37,7 +36,7 @@ public class WheelsControlAssigner : MonoBehaviour {
          *   SIDE AND THEN ASSIGNS SAID CALCULATIONS TO ALL WHEELS OF SAME SIDE---*/
 
         currentSpeed = rb.velocity.magnitude;
-
+        
         //if no input is given, reset values
         lWheel.brakeTorque = 0;
         lWheel.motorTorque = 0;
@@ -87,8 +86,6 @@ public class WheelsControlAssigner : MonoBehaviour {
             lCurve = lWheel.sidewaysFriction;
             lCurve.stiffness = fricLo;
             lWheel.sidewaysFriction = lCurve;
-
-            turning = true;
         } else if (Input.GetKey(KeyCode.D)) { //TURNING RIGHT
             lWheel.motorTorque = steerForce;
             lCurve = lWheel.sidewaysFriction;
@@ -99,10 +96,6 @@ public class WheelsControlAssigner : MonoBehaviour {
             rCurve = rWheel.sidewaysFriction;
             rCurve.stiffness = fricLo;
             rWheel.sidewaysFriction = rCurve;
-
-            turning = true;
-        } else {
-            turning = false;
         }
 
         //TURN SPEED LIMITER

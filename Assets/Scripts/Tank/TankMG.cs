@@ -19,6 +19,7 @@ public class TankMG : MonoBehaviour {
     }
 
     void Shoot() {
+        ViewChanger.Instance.ShakeCurrentCam(2, 2, 0, 0.2f);
         RaycastHit hit;
         Debug.DrawRay(trans.position, trans.forward * 50, Color.yellow);
         if (Physics.Raycast(trans.position, trans.forward, out hit)) {

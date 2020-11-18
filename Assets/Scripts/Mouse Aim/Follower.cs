@@ -35,11 +35,7 @@ public class Follower : MonoBehaviour {
 
         if (Vector3.Distance(transform.position, target.transform.position) < 0.25f) {
             speedLocked = false;
-        }
-
-        if (tank.turning) {
-            moveSpeed = 0.2f;
-        }
+        }     
 
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, moveSpeed);
     }
