@@ -52,6 +52,7 @@ public class TargetRotator : MonoBehaviour {
             xSpeed = -maxSpeed;
         }
 
+        //bad, needs to limit locally in relation to tank hull's rotations
         if (trans.eulerAngles.x < 340 && trans.eulerAngles.x > 180 && ySpeed < 0) {
             ySpeed = 0;
         } else if (trans.eulerAngles.x > 20 && trans.eulerAngles.x < 180 && ySpeed > 0) {

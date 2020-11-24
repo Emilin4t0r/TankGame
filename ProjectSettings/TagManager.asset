@@ -7,6 +7,9 @@ TagManager:
   - RWheel
   - LWheel
   - Ground
+  - AllyInf
+  - EnemyInf
+  - SlotList
   layers:
   - Default
   - TransparentFX
