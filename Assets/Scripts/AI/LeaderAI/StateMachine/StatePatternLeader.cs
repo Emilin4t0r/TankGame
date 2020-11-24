@@ -10,7 +10,7 @@ public class StatePatternLeader : MonoBehaviour {
     public float searchDistance; //distance how far the leader can go from the patrol area
     public float accuracy; //Size of accuracy cone when shooting (0.0f - 1.0f) (not recommended to go above 0.2f)
 
-    //[HideInInspector]
+    [HideInInspector]
     public int health;
     [HideInInspector]
     public GameObject gruntSlotList;
@@ -40,8 +40,6 @@ public class StatePatternLeader : MonoBehaviour {
     public ShootState shootState;
     [HideInInspector]
     public FleeState fleeState;
-
-
 
     public bool attackAnimDone;
     public bool shootAnimDone;
@@ -106,21 +104,23 @@ public class StatePatternLeader : MonoBehaviour {
 
     public void RemoveEnemyLeader(StatePatternLeader removee) {
         enemies.Remove(removee.GetComponent<Collider>());
-        UpdateGruntEnemyLists(removee.gameObject.GetComponent<Collider>());
+        UpdateGruntEnemyLists(removee.GetComponent<Collider>());
         removee.Die();
     }
 
     public void RemoveEnemyGrunt(GruntController removee) {
         enemies.Remove(removee.GetComponent<Collider>());
-        UpdateGruntEnemyLists(removee.gameObject.GetComponent<Collider>());
+        UpdateGruntEnemyLists(removee.GetComponent<Collider>());
         removee.Die();
     }
 
     public void UpdateGruntEnemyLists(Collider removee) {
         if (grunts != null) {
             foreach (GameObject grunt in grunts) {
-                if (grunt.GetComponent<GruntController>().enemyList.Contains(removee)) {
-                    grunt.GetComponent<GruntController>().enemyList.Remove(removee);
+                if (grunt != null) {
+                    if (grunt.GetComponent<GruntController>().enemyList.Contains(removee)) {
+                        grunt.GetComponent<GruntController>().enemyList.Remove(removee);
+                    }
                 }
             }
         }

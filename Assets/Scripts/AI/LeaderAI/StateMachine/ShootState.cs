@@ -52,7 +52,6 @@ public class ShootState : ILeaderState {
     }
     void Shoot(GameObject target) {
         if (target != null) {            
-            Debug.Log(leader.name + " shot at " + target.name);
 
             //Accuracy calculations
             Vector3 deviation3D = Random.insideUnitCircle * leader.accuracy;
@@ -70,7 +69,6 @@ public class ShootState : ILeaderState {
                         if (enemyLeader.health < 1) {
                             leader.RemoveEnemyLeader(enemyLeader);
                         }
-                        Debug.Log(hit.transform.name + " was hit!");
                     } else if (hit.transform.GetComponent<GruntController>()) { //if target is a grunt
                         GruntController enemyGrunt = hit.transform.GetComponent<GruntController>();
                         enemyGrunt.health -= 25;

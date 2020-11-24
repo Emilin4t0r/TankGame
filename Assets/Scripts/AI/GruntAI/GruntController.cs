@@ -104,8 +104,10 @@ public class GruntController : MonoBehaviour {
                             if (currentLeader != null) {
                                 currentLeader.RemoveEnemyLeader(enemyLeader);
                             } else {
-                                enemyList.Remove(enemyLeader.GetComponent<Collider>());
-                                enemyLeader.Die();
+                                if (enemyLeader != null) {
+                                    enemyList.Remove(enemyLeader.GetComponent<Collider>());
+                                    enemyLeader.Die();
+                                }
                             }
                         }
                     } else if (hit.transform.GetComponent<GruntController>()) { //if target is a grunt
@@ -115,8 +117,10 @@ public class GruntController : MonoBehaviour {
                             if (currentLeader != null && enemyList.Contains(enemyGrunt.GetComponent<Collider>())) {
                                 currentLeader.RemoveEnemyGrunt(enemyGrunt);
                             } else {
-                                enemyList.Remove(enemyGrunt.GetComponent<Collider>());
-                                enemyGrunt.Die();
+                                if (enemyGrunt != null) {
+                                    enemyList.Remove(enemyGrunt.GetComponent<Collider>());
+                                    enemyGrunt.Die();
+                                }
                             }
                         }
                     }

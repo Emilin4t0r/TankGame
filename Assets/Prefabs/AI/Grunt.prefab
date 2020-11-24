@@ -194,7 +194,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leaderScanRadius: 50
   enemyTag: EnemyInf
+  accuracy: 0.1
+  health: 0
+  shootTarget: {fileID: 0}
   navMeshAgent: {fileID: 0}
+  enemyList: []
 --- !u!195 &261418310981513048
 NavMeshAgent:
   m_ObjectHideFlags: 0
