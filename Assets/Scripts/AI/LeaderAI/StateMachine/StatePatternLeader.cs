@@ -8,11 +8,14 @@ public class StatePatternLeader : MonoBehaviour {
     public string enemyTag;
     public GameObject patrolArea;
     public float searchDistance; //distance how far the leader can go from the patrol area
+    public float accuracy; //Size of accuracy cone when shooting (0.0f - 1.0f) (not recommended to go above 0.2f)
 
+    [HideInInspector]
+    public int health;
     [HideInInspector]
     public GameObject gruntSlotList;
     [HideInInspector]
-    public List<GameObject> grunts;    
+    public List<GameObject> grunts;
     [HideInInspector]
     public List<Collider> enemies;
     [HideInInspector]
@@ -38,7 +41,10 @@ public class StatePatternLeader : MonoBehaviour {
     [HideInInspector]
     public FleeState fleeState;
 
-    public bool doingAttackAnim;
+
+
+    public bool attackAnimDone;
+    public bool shootAnimDone;
 
 
     [HideInInspector]
@@ -58,6 +64,8 @@ public class StatePatternLeader : MonoBehaviour {
     }
 
     void Start() {
+        health = 100;
+        shootAnimDone = true;
         currentState = searchState;
     }
 
@@ -69,6 +77,10 @@ public class StatePatternLeader : MonoBehaviour {
         //check amount of leader's soldiers
     }
 
+    public void Die() {
+        Destroy(gameObject);
+    }
+
     public void AnimTimer(float time, string animName) {
         StartCoroutine(AnimCor(time, animName));
     }
@@ -76,8 +88,13 @@ public class StatePatternLeader : MonoBehaviour {
     IEnumerator AnimCor(float time, string animName) {
 
         yield return new WaitForSeconds(time);
-        if (animName == "AttackAnim") {
-            doingAttackAnim = true;
+        switch (animName) {
+            case "AttackAnim":
+                attackAnimDone = true;
+                break;
+            case "ShootAnim":
+                shootAnimDone = true;
+                break;
         }
 
     }
@@ -86,9 +103,18 @@ public class StatePatternLeader : MonoBehaviour {
         if (currentState == searchState) {
             searchState.TurnAround();
         }
-    }    
+    }
+
+    public void UpdateGruntEnemyLists(Collider removee) {
+        if (grunts != null) {
+            foreach (GameObject grunt in grunts) {
+                if (grunt.GetComponent<GruntController>().enemyList.Contains(removee))
+                    grunt.GetComponent<GruntController>().enemyList.Remove(removee);
+            }
+        }
+    }
 
     private void OnDrawGizmosSelected() {
-        Gizmos.DrawWireSphere(transform.position, sightRange);        
+        Gizmos.DrawWireSphere(transform.position, sightRange);
     }
 }

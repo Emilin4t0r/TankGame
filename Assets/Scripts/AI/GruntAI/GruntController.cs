@@ -12,6 +12,7 @@ public class GruntController : MonoBehaviour {
     bool shooting;
     bool isSentry;
     public UnityEngine.AI.NavMeshAgent navMeshAgent;
+    public List<Collider> enemyList = new List<Collider>();
 
     private void Awake() {
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
@@ -21,10 +22,11 @@ public class GruntController : MonoBehaviour {
         if (!isSentry && !shooting) {
             if (currentSlot == null) {
                 FindSlot();
+            } else {
+                navMeshAgent.destination = currentSlot.transform.position;
             }
-            navMeshAgent.destination = currentSlot.transform.position;
         }
-        if (shooting) {            
+        if (shooting) {
             Shoot();
         }
     }
@@ -43,11 +45,16 @@ public class GruntController : MonoBehaviour {
                 if (newSlot != null) {
                     currentSlot = newSlot;
                     newSlot.GetComponent<GruntSlot>().myGrunt = gameObject;
+                    StatePatternLeader currentLeader = slotList.transform.parent.GetComponent<StatePatternLeader>();
+                    if (currentLeader.currentState == currentLeader.shootState) {
+                        currentLeader.searchState.Attack(); //if the new leader is shooting at something, tell its new grunts to shoot as well
+                    }
                     break;
-                } else {
-                    print("Found no slots from " + slotList.transform.parent);
-                    //isSentry = true;
                 }
+            }
+            if (currentSlot == null) {
+                isSentry = true;
+                print("joopajoo");
             }
         } else {
             isSentry = true;
@@ -55,16 +62,21 @@ public class GruntController : MonoBehaviour {
     }
 
     public void Attack(List<Collider> enemies) {
+        enemyList = enemies;
         if (shootTarget == null) {
-            shootTarget = enemies[Random.Range(0, enemies.Count)].gameObject;
+            FindShootTarget();
         }
         shooting = true;
         StartCoroutine("GetNewFiringPos");
-        
+
     }
 
     void Shoot() {
-        transform.LookAt(shootTarget.transform);
+        if (shootTarget != null) {
+            transform.LookAt(shootTarget.transform);
+        } else {
+            FindShootTarget();
+        }
     }
 
     bool CanSeeEnemy() {
@@ -78,6 +90,24 @@ public class GruntController : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    void FindShootTarget() {
+        if (enemyList.Count > 0) {
+            int rand = Random.Range(0, enemyList.Count);
+            if (enemyList[rand] != null) {
+                shootTarget = enemyList[rand].gameObject;
+            } else {
+                enemyList.Remove(enemyList[rand]);
+                if (enemyList.Count == 0) {
+                    shooting = false;
+                } else {
+                    FindShootTarget();
+                }
+            }
+        } else {
+            shooting = false;
+        }
     }
 
     IEnumerator GetNewFiringPos() {

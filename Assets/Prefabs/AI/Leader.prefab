@@ -395,6 +395,7 @@ MonoBehaviour:
   enemyTag: EnemyInf
   patrolArea: {fileID: 0}
   searchDistance: 50
+  accuracy: 0.05
   gruntSlotList: {fileID: 0}
   grunts: []
   enemies: []
@@ -406,7 +407,8 @@ MonoBehaviour:
   shootTarget: {fileID: 0}
   sentryState: {fileID: 0}
   fleeState: {fileID: 0}
-  doingAttackAnim: 0
+  attackAnimDone: 0
+  shootAnimDone: 0
   navMeshAgent: {fileID: 0}
 --- !u!195 &7484562719023739755
 NavMeshAgent:

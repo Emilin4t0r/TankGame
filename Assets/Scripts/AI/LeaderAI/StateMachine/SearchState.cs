@@ -13,9 +13,8 @@ public class SearchState : ILeaderState {
     public void UpdateState() {
         Search();
 
-        if (leader.doingAttackAnim) {
-            Debug.Log("animaatio valmis! " + leader.doingAttackAnim);
-            leader.doingAttackAnim = false;
+        if (leader.attackAnimDone) {
+            leader.attackAnimDone = false;
             shouldStop = false;
             ToShootState();
         }
@@ -36,7 +35,6 @@ public class SearchState : ILeaderState {
 
     public void ToShootState() {
         leader.currentState = leader.shootState;
-        Debug.Log(leader.name + " Now shooting");
     }
     void Search() {
         leader.navMeshAgent.isStopped = false;
@@ -45,10 +43,7 @@ public class SearchState : ILeaderState {
         }
         if (!shouldStop) {
             leader.navMeshAgent.destination = leader.walkingTarget;
-        }
-        
-
-        //Check for nearby friendlies getting too close -> get new walking target (TooCloseToFriendly() in StatePatternLeader
+        }               
 
         // Leader has arrived to destination.
         if (leader.navMeshAgent.remainingDistance <= leader.navMeshAgent.stoppingDistance && !leader.navMeshAgent.pathPending && !shouldStop) {              
@@ -77,10 +72,15 @@ public class SearchState : ILeaderState {
     }
 
     void Look() {
-        Collider[] colliders = Physics.OverlapSphere(leader.transform.position, leader.sightRange);
+        Collider[] colliders = Physics.OverlapSphere(leader.transform.position, leader.sightRange); 
+        foreach (Collider col in colliders) {
+            if (col.CompareTag(leader.enemyTag)) {//If if see one enemy, 
+                colliders = Physics.OverlapSphere(col.transform.position, 10f);//make new scan for enemies around it
+            }
+        }
         leader.enemies = new List<Collider>();
         foreach (Collider col in colliders) {
-            if (col.CompareTag(leader.enemyTag)) {
+            if (col.CompareTag(leader.enemyTag)) { //add enemies in are to list
                 leader.enemies.Add(col);
             }
         }
@@ -91,7 +91,7 @@ public class SearchState : ILeaderState {
         }
     }
 
-    void Attack() {
+    public void Attack() {
         Debug.Log(leader.name + " giving attack command to grunts!");
         leader.grunts = leader.gruntSlotList.GetComponent<GruntSlotList>().GetGrunts();
         if (leader.grunts != null) {
