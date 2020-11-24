@@ -6,9 +6,14 @@ public class GruntController : MonoBehaviour {
 
     public float leaderScanRadius;
     public string enemyTag;
+    public float accuracy;
 
+    [HideInInspector]
+    public int health;
+    float nextShootTime = 0;
+    StatePatternLeader currentLeader;
     GameObject currentSlot;
-    GameObject shootTarget;
+    public GameObject shootTarget;
     bool shooting;
     bool isSentry;
     public UnityEngine.AI.NavMeshAgent navMeshAgent;
@@ -16,6 +21,7 @@ public class GruntController : MonoBehaviour {
 
     private void Awake() {
         navMeshAgent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+        health = 100;
     }
 
     private void FixedUpdate() {
@@ -27,7 +33,15 @@ public class GruntController : MonoBehaviour {
             }
         }
         if (shooting) {
-            Shoot();
+            if (shootTarget != null) {
+                transform.LookAt(shootTarget.transform);
+            }
+            if (shootTarget != null && Time.time > nextShootTime) {                
+                Shoot();
+            }
+            if (shootTarget == null) {
+                FindShootTarget();
+            }
         }
     }
 
@@ -45,7 +59,7 @@ public class GruntController : MonoBehaviour {
                 if (newSlot != null) {
                     currentSlot = newSlot;
                     newSlot.GetComponent<GruntSlot>().myGrunt = gameObject;
-                    StatePatternLeader currentLeader = slotList.transform.parent.GetComponent<StatePatternLeader>();
+                    currentLeader = slotList.transform.parent.GetComponent<StatePatternLeader>();
                     if (currentLeader.currentState == currentLeader.shootState) {
                         currentLeader.searchState.Attack(); //if the new leader is shooting at something, tell its new grunts to shoot as well
                     }
@@ -54,7 +68,6 @@ public class GruntController : MonoBehaviour {
             }
             if (currentSlot == null) {
                 isSentry = true;
-                print("joopajoo");
             }
         } else {
             isSentry = true;
@@ -73,10 +86,44 @@ public class GruntController : MonoBehaviour {
 
     void Shoot() {
         if (shootTarget != null) {
-            transform.LookAt(shootTarget.transform);
-        } else {
-            FindShootTarget();
+            
+            //Accuracy calculations
+            Vector3 deviation3D = Random.insideUnitCircle * accuracy;
+            Quaternion rot = Quaternion.LookRotation(Vector3.forward + deviation3D);
+            Vector3 fwd = transform.rotation * rot * Vector3.forward;
+
+            //Shooting ray
+            RaycastHit hit;
+            Debug.DrawRay(transform.position, fwd * 100, Color.red, 0.5f);
+            if (Physics.Raycast(transform.position, fwd, out hit, 100)) {
+                if (hit.transform.tag == enemyTag) {
+                    if (hit.transform.GetComponent<StatePatternLeader>()) { //if target is a leader
+                        StatePatternLeader enemyLeader = hit.transform.GetComponent<StatePatternLeader>();
+                        enemyLeader.health -= 10;
+                        if (enemyLeader.health < 1) {
+                            if (currentLeader != null) {
+                                currentLeader.RemoveEnemyLeader(enemyLeader);
+                            } else {
+                                enemyList.Remove(enemyLeader.GetComponent<Collider>());
+                                enemyLeader.Die();
+                            }
+                        }
+                    } else if (hit.transform.GetComponent<GruntController>()) { //if target is a grunt
+                        GruntController enemyGrunt = hit.transform.GetComponent<GruntController>();
+                        enemyGrunt.health -= 10;
+                        if (enemyGrunt.health < 1) {
+                            if (currentLeader != null && enemyList.Contains(enemyGrunt.GetComponent<Collider>())) {
+                                currentLeader.RemoveEnemyGrunt(enemyGrunt);
+                            } else {
+                                enemyList.Remove(enemyGrunt.GetComponent<Collider>());
+                                enemyGrunt.Die();
+                            }
+                        }
+                    }
+                }
+            }
         }
+        nextShootTime = Time.time + 1;
     }
 
     bool CanSeeEnemy() {
@@ -114,9 +161,12 @@ public class GruntController : MonoBehaviour {
         do {
             navMeshAgent.destination = new Vector3(transform.position.x + Random.Range(-2f, 2f), 1, transform.position.z + Random.Range(-2f, 2f));
             yield return new WaitForSeconds(2);
-        } while (!CanSeeEnemy());
+        } while (!CanSeeEnemy() && shooting);
     }
 
+    public void Die() {
+        Destroy(gameObject);
+    }
 
     private void OnDrawGizmosSelected() {
         Gizmos.DrawWireSphere(transform.position, leaderScanRadius);
